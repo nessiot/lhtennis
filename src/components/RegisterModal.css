@@ -1,0 +1,398 @@
+/* 모달 오버레이 */
+.register-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 모달 컨테이너 */
+.register-modal-container {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 모달 헤더 */
+.register-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.register-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.register-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.register-modal-close:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.register-modal-close:active {
+  background-color: #e5e7eb;
+}
+
+/* 폼 */
+.register-modal-form {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 입력 그룹 */
+.register-modal-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register-modal-input-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.register-modal-input-group input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.register-modal-input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.register-modal-input-group input.error {
+  border-color: #ef4444;
+}
+
+.register-modal-input-group input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.register-modal-input-group input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  color: #6b7280;
+}
+
+.register-modal-char-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: right;
+  padding-right: 0.25rem;
+}
+
+/* 에러 메시지 */
+.register-modal-error {
+  padding: 0.75rem 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 0.875rem;
+  animation: shake 0.3s ease-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* 버튼 그룹 */
+.register-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.register-modal-button {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 44px; /* 터치 영역 최소 크기 */
+}
+
+.register-modal-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.cancel-button:active:not(:disabled) {
+  background-color: #d1d5db;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .register-modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end; /* 모바일에서는 하단 정렬 */
+  }
+
+  .register-modal-container {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+    animation: slideUpMobile 0.3s ease-out;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .register-modal-header {
+    padding: 1.25rem 1.25rem 0.875rem;
+  }
+
+  .register-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .register-modal-close {
+    width: 36px;
+    height: 36px;
+    font-size: 1.75rem;
+  }
+
+  .register-modal-form {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .register-modal-actions {
+    flex-direction: column-reverse; /* 모바일에서는 취소 버튼을 아래로 */
+    gap: 0.5rem;
+  }
+
+  .register-modal-button {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-modal-overlay {
+    padding: 0;
+  }
+
+  .register-modal-container {
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+  }
+
+  .register-modal-header {
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .register-modal-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .register-modal-form {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .register-modal-input-group input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .register-modal-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* 모바일 hover 효과 제거 */
+@media (hover: none) {
+  .register-modal-close:hover {
+    background-color: transparent;
+    color: #6b7280;
+  }
+
+  .cancel-button:hover:not(:disabled) {
+    background-color: #f3f4f6;
+  }
+
+  .submit-button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* 다크모드 대응 (선택사항) */
+@media (prefers-color-scheme: dark) {
+  .register-modal-container {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+
+  .register-modal-header {
+    border-bottom-color: #374151;
+  }
+
+  .register-modal-header h2 {
+    color: #f9fafb;
+  }
+
+  .register-modal-close {
+    color: #9ca3af;
+  }
+
+  .register-modal-close:hover {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+
+  .register-modal-input-group label {
+    color: #d1d5db;
+  }
+
+  .register-modal-input-group input {
+    background-color: #111827;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .register-modal-input-group input:focus {
+    border-color: #667eea;
+  }
+
+  .register-modal-input-group input:disabled {
+    background-color: #374151;
+    color: #6b7280;
+  }
+
+  .register-modal-char-count {
+    color: #9ca3af;
+  }
+
+  .cancel-button {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+
+  .cancel-button:hover:not(:disabled) {
+    background-color: #4b5563;
+  }
+}
+

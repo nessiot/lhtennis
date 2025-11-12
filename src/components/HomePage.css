@@ -1,0 +1,228 @@
+.home-page {
+  min-height: 100vh;
+  min-height: -webkit-fill-available; /* iOS Safari 대응 */
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+}
+
+.home-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-tap-highlight-color: transparent; /* 모바일 탭 하이라이트 제거 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
+}
+
+.register-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.register-button:active {
+  transform: translateY(0);
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* 모바일에서는 hover 효과 제거 */
+@media (hover: none) {
+  .register-button:hover {
+    transform: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  gap: 3rem;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.menu-button {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  -webkit-tap-highlight-color: transparent; /* 모바일 탭 하이라이트 제거 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
+}
+
+.tennis-button {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.tennis-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tennis-button:active {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* 모바일에서는 hover 효과 제거 */
+@media (hover: none) {
+  .tennis-button:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.billiards-button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.billiards-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.billiards-button:active {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* 모바일에서는 hover 효과 제거 */
+@media (hover: none) {
+  .billiards-button:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .home-header {
+    padding: 1rem 1.5rem;
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .register-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    min-height: 44px; /* 터치 영역 최소 크기 */
+    min-width: 60px;
+  }
+
+  .home-main {
+    padding: 1.5rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    gap: 2.5rem;
+  }
+
+  .home-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .menu-buttons {
+    max-width: 100%;
+    gap: 1.2rem;
+    padding: 0 0.5rem;
+  }
+
+  .menu-button {
+    padding: 1.3rem 1.5rem;
+    font-size: 1.3rem;
+    min-height: 56px; /* 터치 영역 최소 크기 */
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-header {
+    padding: 0.75rem 1rem;
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .register-button {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    min-width: 55px;
+  }
+
+  .home-main {
+    padding: 1rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    gap: 2rem;
+  }
+
+  .home-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    padding: 0 0.5rem;
+  }
+
+  .menu-buttons {
+    gap: 1rem;
+    padding: 0;
+  }
+
+  .menu-button {
+    padding: 1.2rem 1.2rem;
+    font-size: 1.2rem;
+    min-height: 56px;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* 매우 작은 화면 (320px 이하) */
+@media (max-width: 320px) {
+  .home-title {
+    font-size: 1.5rem;
+  }
+
+  .menu-button {
+    padding: 1rem 1rem;
+    font-size: 1.1rem;
+  }
+}
+
