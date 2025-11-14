@@ -8,7 +8,7 @@ function HomePage({ onTennisClick, onBilliardsClick, onRegisterClick }) {
           className="register-button"
           onClick={onRegisterClick}
         >
-          등록
+          선수등록
         </button>
       </header>
       
@@ -36,4 +36,5 @@ function HomePage({ onTennisClick, onBilliardsClick, onRegisterClick }) {
 }
 
 export default HomePage;
+
 

@@ -109,14 +109,37 @@ export const tennisService = {
   // 필터링된 기록 가져오기
   async getFilteredRecords(filters) {
     const records = await this.getRecords();
-    return records.filter((record) => {
-      const players = [record.player1, record.player2, record.player3, record.player4];
-      if (filters.player1 && !players.includes(filters.player1)) return false;
-      if (filters.player2 && !players.includes(filters.player2)) return false;
-      if (filters.player3 && !players.includes(filters.player3)) return false;
-      if (filters.player4 && !players.includes(filters.player4)) return false;
-      return true;
+    const matchesTeam = (teamPlayers, firstFilter, secondFilter) => {
+      const activeFilters = [firstFilter, secondFilter].filter(Boolean);
+      if (activeFilters.length === 0) return true;
+      return activeFilters.every((name) => teamPlayers.includes(name));
+    };
+
+    const results = [];
+
+    records.forEach((record) => {
+      const leftTeam = [record.player1, record.player2];
+      const rightTeam = [record.player3, record.player4];
+
+      const normalMatch =
+        matchesTeam(leftTeam, filters.player1, filters.player2) &&
+        matchesTeam(rightTeam, filters.player3, filters.player4);
+
+      if (normalMatch) {
+        results.push({ ...record, flipped: false });
+        return;
+      }
+
+      const flippedMatch =
+        matchesTeam(rightTeam, filters.player1, filters.player2) &&
+        matchesTeam(leftTeam, filters.player3, filters.player4);
+
+      if (flippedMatch) {
+        results.push({ ...record, flipped: true });
+      }
     });
+
+    return results;
   },
 };
 
@@ -257,4 +280,3 @@ export const userService = {
   },
 };
 */
-

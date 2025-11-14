@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { userService, billiardsService } from '../lib/supabase';
+import { billiardsService } from '../lib/supabase';
+import NameSelector from './NameSelector';
 import './BilliardsStatsPage.css';
 
 function BilliardsStatsPage({ onBack }) {
@@ -7,14 +8,12 @@ function BilliardsStatsPage({ onBack }) {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedName, setSelectedName] = useState('');
   const [availableDates, setAvailableDates] = useState([]);
-  const [userNames, setUserNames] = useState([]);
   const [records, setRecords] = useState([]);
   const [error, setError] = useState('');
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [showNameSelector, setShowNameSelector] = useState(false);
 
   useEffect(() => {
-    loadUserNames();
     loadAvailableDates();
   }, []);
 
@@ -28,14 +27,6 @@ function BilliardsStatsPage({ onBack }) {
     }
   }, [mode, selectedDate, selectedName]);
 
-  const loadUserNames = async () => {
-    try {
-      const names = await userService.getUserNames();
-      setUserNames(names);
-    } catch (error) {
-      console.error('사용자 목록 로드 실패:', error);
-    }
-  };
 
   const loadAvailableDates = async () => {
     try {
@@ -49,9 +40,10 @@ function BilliardsStatsPage({ onBack }) {
   const loadRecordsByDate = async () => {
     try {
       const dateRecords = await billiardsService.getRecordsByDate(selectedDate);
-      setRecords(dateRecords.sort((a, b) => 
-        parseFloat(b.percentage) - parseFloat(a.percentage)
-      ));
+      const sorted = dateRecords
+        .sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
+        .map((record, index) => ({ ...record, rank: index + 1 }));
+      setRecords(sorted);
       setError('');
     } catch (error) {
       setError(error.message || '조회 중 오류가 발생했습니다');
@@ -62,7 +54,8 @@ function BilliardsStatsPage({ onBack }) {
   const loadRecordsByName = async () => {
     try {
       const nameRecords = await billiardsService.getRecordsByName(selectedName);
-      setRecords(nameRecords);
+      const ranked = nameRecords.map((record, index) => ({ ...record, rank: index + 1 }));
+      setRecords(ranked);
       setError('');
     } catch (error) {
       setError(error.message || '조회 중 오류가 발생했습니다');
@@ -84,7 +77,7 @@ function BilliardsStatsPage({ onBack }) {
   };
 
   const handleNameSelect = (name) => {
-    setSelectedName(name);
+    setSelectedName(name || '');
     setShowNameSelector(false);
   };
 
@@ -169,21 +162,23 @@ function BilliardsStatsPage({ onBack }) {
             </h3>
             <div className="records-table">
               <div className={`table-header ${mode === 'name' ? 'with-date' : ''}`}>
+                <div>순위</div>
                 <div>이름</div>
-                <div>기존 다마수</div>
-                <div>뺀 다마수</div>
-                <div>추가 다마수</div>
+                <div>다마수</div>
+                <div>뺀공</div>
+                <div>히로</div>
                 <div>퍼센트</div>
                 {mode === 'name' && <div>날짜</div>}
               </div>
               {records.map((record) => (
                 <div key={record.id} className={`table-row ${mode === 'name' ? 'with-date' : ''}`}>
+                  <div className="cell-rank">{record.rank || '-'}</div>
                   <div className="cell-name">{record.player_name}</div>
                   <div className="cell-number">{record.base_dama}</div>
                   <div className="cell-number">{record.minus_dama}</div>
                   <div className="cell-number">{record.plus_dama}</div>
                   <div className={`cell-percentage ${parseFloat(record.percentage) >= 100 ? 'positive' : 'negative'}`}>
-                    {record.percentage}%
+                    {Number(record.percentage || 0).toFixed(2)}%
                   </div>
                   {mode === 'name' && (
                     <div className="cell-date">
@@ -234,39 +229,15 @@ function BilliardsStatsPage({ onBack }) {
         </div>
       )}
 
-      {showNameSelector && (
-        <div className="selector-overlay" onClick={() => setShowNameSelector(false)}>
-          <div className="selector" onClick={(e) => e.stopPropagation()}>
-            <h3>이름 선택</h3>
-            <div className="selector-list">
-              {userNames.length === 0 ? (
-                <p className="no-items">등록된 이름이 없습니다</p>
-              ) : (
-                userNames.map((name) => (
-                  <button
-                    key={name}
-                    type="button"
-                    className="selector-item"
-                    onClick={() => handleNameSelect(name)}
-                  >
-                    {name}
-                  </button>
-                ))
-              )}
-            </div>
-            <button
-              type="button"
-              className="close-selector"
-              onClick={() => setShowNameSelector(false)}
-            >
-              닫기
-            </button>
-          </div>
-        </div>
-      )}
+      <NameSelector
+        isOpen={showNameSelector}
+        onClose={() => setShowNameSelector(false)}
+        onSelect={handleNameSelect}
+        title="이름 선택"
+        allowEmptySelection
+      />
     </div>
   );
 }
 
 export default BilliardsStatsPage;
-

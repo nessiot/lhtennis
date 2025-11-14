@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { userService, tennisService } from '../lib/supabase';
+import { useState } from 'react';
+import { tennisService } from '../lib/supabase';
+import NameSelector from './NameSelector';
 import './TennisStatsPage.css';
 
 function TennisStatsPage({ onBack }) {
@@ -9,23 +10,9 @@ function TennisStatsPage({ onBack }) {
     player3: '',
     player4: '',
   });
-  const [userNames, setUserNames] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [stats, setStats] = useState(null);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    loadUserNames();
-  }, []);
-
-  const loadUserNames = async () => {
-    try {
-      const names = await userService.getUserNames();
-      setUserNames(names);
-    } catch (error) {
-      console.error('사용자 목록 로드 실패:', error);
-    }
-  };
 
   const handleFilterClick = (field) => {
     setSelectedFilter(field);
@@ -36,7 +23,7 @@ function TennisStatsPage({ onBack }) {
     if (selectedFilter) {
       setFilters((prev) => ({
         ...prev,
-        [selectedFilter]: name,
+        [selectedFilter]: name || '',
       }));
     }
     setSelectedFilter(null);
@@ -75,17 +62,29 @@ function TennisStatsPage({ onBack }) {
     let losses = 0;
 
     const processedRecords = records.map((record) => {
-      const isWin = record.score_left > record.score_right;
+      const orientedRecord = record.flipped
+        ? {
+            ...record,
+            player1: record.player3,
+            player2: record.player4,
+            player3: record.player1,
+            player4: record.player2,
+            score_left: record.score_right,
+            score_right: record.score_left,
+          }
+        : record;
+
+      const isWin = orientedRecord.score_left > orientedRecord.score_right;
       if (isWin) wins++;
       else losses++;
 
       return {
-        ...record,
+        ...orientedRecord,
         isWin,
-        leftTeam: `${record.player1} / ${record.player2}`,
-        rightTeam: `${record.player3} / ${record.player4}`,
-        score: `${record.score_left} : ${record.score_right}`,
-        date: new Date(record.created_at).toLocaleDateString('ko-KR'),
+        leftTeam: `${orientedRecord.player1} / ${orientedRecord.player2}`,
+        rightTeam: `${orientedRecord.player3} / ${orientedRecord.player4}`,
+        score: `${orientedRecord.score_left} : ${orientedRecord.score_right}`,
+        date: new Date(orientedRecord.created_at).toLocaleDateString('ko-KR'),
       };
     });
 
@@ -122,46 +121,52 @@ function TennisStatsPage({ onBack }) {
       <main className="tennis-stats-main">
         <div className="stats-filters">
           <h2>조회 조건</h2>
-          <div className="filter-inputs">
-            <div className="filter-group">
-              <label>나</label>
-              <button
-                type="button"
-                className={`filter-button ${selectedFilter === 'player1' ? 'selected' : ''}`}
-                onClick={() => handleFilterClick('player1')}
-              >
-                {filters.player1 || '선택'}
-              </button>
+          <div className="team-filter-sections">
+            <div className="team-filter-card">
+              <p className="team-filter-label">내 팀</p>
+              <div className="player-inputs stats-player-inputs">
+                <button
+                  type="button"
+                  className={`player-button stats-player-button ${
+                    selectedFilter === 'player1' ? 'selected' : ''
+                  }`}
+                  onClick={() => handleFilterClick('player1')}
+                >
+                  {filters.player1 || '이름 1'}
+                </button>
+                <button
+                  type="button"
+                  className={`player-button stats-player-button ${
+                    selectedFilter === 'player2' ? 'selected' : ''
+                  }`}
+                  onClick={() => handleFilterClick('player2')}
+                >
+                  {filters.player2 || '이름 2'}
+                </button>
+              </div>
             </div>
-            <div className="filter-group">
-              <label>파트너</label>
-              <button
-                type="button"
-                className={`filter-button ${selectedFilter === 'player2' ? 'selected' : ''}`}
-                onClick={() => handleFilterClick('player2')}
-              >
-                {filters.player2 || '선택'}
-              </button>
-            </div>
-            <div className="filter-group">
-              <label>상대 1</label>
-              <button
-                type="button"
-                className={`filter-button ${selectedFilter === 'player3' ? 'selected' : ''}`}
-                onClick={() => handleFilterClick('player3')}
-              >
-                {filters.player3 || '선택'}
-              </button>
-            </div>
-            <div className="filter-group">
-              <label>상대 2</label>
-              <button
-                type="button"
-                className={`filter-button ${selectedFilter === 'player4' ? 'selected' : ''}`}
-                onClick={() => handleFilterClick('player4')}
-              >
-                {filters.player4 || '선택'}
-              </button>
+            <div className="team-filter-card">
+              <p className="team-filter-label">상대 팀</p>
+              <div className="player-inputs stats-player-inputs">
+                <button
+                  type="button"
+                  className={`player-button stats-player-button ${
+                    selectedFilter === 'player3' ? 'selected' : ''
+                  }`}
+                  onClick={() => handleFilterClick('player3')}
+                >
+                  {filters.player3 || '이름 3'}
+                </button>
+                <button
+                  type="button"
+                  className={`player-button stats-player-button ${
+                    selectedFilter === 'player4' ? 'selected' : ''
+                  }`}
+                  onClick={() => handleFilterClick('player4')}
+                >
+                  {filters.player4 || '이름 4'}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -196,6 +201,10 @@ function TennisStatsPage({ onBack }) {
                 <div className="stat-value">{stats.total}</div>
                 <div className="stat-label">전체 경기</div>
               </div>
+              <div className="stat-card rate">
+                <div className="stat-value">{stats.winRate}%</div>
+                <div className="stat-label">승률</div>
+              </div>
               <div className="stat-card win">
                 <div className="stat-value">{stats.wins}</div>
                 <div className="stat-label">승</div>
@@ -203,10 +212,6 @@ function TennisStatsPage({ onBack }) {
               <div className="stat-card loss">
                 <div className="stat-value">{stats.losses}</div>
                 <div className="stat-label">패</div>
-              </div>
-              <div className="stat-card rate">
-                <div className="stat-value">{stats.winRate}%</div>
-                <div className="stat-label">승률</div>
               </div>
             </div>
 
@@ -236,39 +241,17 @@ function TennisStatsPage({ onBack }) {
         )}
       </main>
 
-      {selectedFilter && (
-        <div className="name-selector-overlay" onClick={() => setSelectedFilter(null)}>
-          <div className="name-selector" onClick={(e) => e.stopPropagation()}>
-            <h3>이름 선택</h3>
-            <div className="name-list">
-              {userNames.length === 0 ? (
-                <p className="no-names">등록된 이름이 없습니다</p>
-              ) : (
-                userNames.map((name) => (
-                  <button
-                    key={name}
-                    type="button"
-                    className="name-item"
-                    onClick={() => handleNameSelect(name)}
-                  >
-                    {name}
-                  </button>
-                ))
-              )}
-            </div>
-            <button
-              type="button"
-              className="close-selector"
-              onClick={() => setSelectedFilter(null)}
-            >
-              닫기
-            </button>
-          </div>
-        </div>
-      )}
+      <NameSelector
+        isOpen={!!selectedFilter}
+        onClose={() => setSelectedFilter(null)}
+        onSelect={handleNameSelect}
+        title="이름 선택"
+        allowEmptySelection
+      />
     </div>
   );
 }
 
 export default TennisStatsPage;
+
 

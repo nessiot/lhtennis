@@ -2,8 +2,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  color: #fff;
+  background: var(--bg-body);
+  color: var(--text-primary);
 }
 
 .tennis-menu-header {
@@ -14,40 +14,37 @@
   padding-top: max(1.5rem, env(safe-area-inset-top));
 }
 
-.back-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.tennis-menu .back-button {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 0.5rem 1rem;
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.4rem;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--blur-backdrop);
   min-width: 44px;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
 }
 
-.back-button:hover {
+.tennis-menu .back-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.back-button:active {
+.tennis-menu .back-button:active {
   transform: scale(0.95);
 }
 
 .tennis-menu-header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.01em;
 }
 
 .header-spacer {
@@ -58,9 +55,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 2rem;
+  padding: 3rem 2rem 2rem;
   gap: 2rem;
 }
 
@@ -74,40 +71,43 @@
 
 .menu-button {
   width: 100%;
-  padding: 1.5rem 2rem;
-  font-size: 1.5rem;
+  padding: 1.35rem 2rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  border: none;
-  border-radius: 15px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.35s ease;
+  box-shadow: 0 20px 45px rgba(6, 13, 34, 0.45);
   color: #fff;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   min-height: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.menu-button:hover::after {
+  opacity: 1;
 }
 
 .record-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.record-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
 }
 
 .stats-button {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #f472b6, #c084fc);
 }
 
-.stats-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.menu-button:active {
-  transform: translateY(-2px);
+.menu-button:hover {
+  transform: translateY(-6px) scale(1.01);
 }
 
 @media (max-width: 768px) {
@@ -121,7 +121,7 @@
   }
 
   .tennis-menu-main {
-    padding: 1.5rem;
+    padding: 2.25rem 1.5rem 1.5rem;
     gap: 1.5rem;
   }
 
@@ -152,14 +152,9 @@
 }
 
 @media (hover: none) {
-  .back-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
   .menu-button:hover {
     transform: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
 }
+
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { userService, tennisService } from '../lib/supabase';
+import { tennisService } from '../lib/supabase';
+import NameSelector from './NameSelector';
 import './TennisRecordPage.css';
 
 function TennisRecordPage({ onBack }) {
@@ -13,24 +14,10 @@ function TennisRecordPage({ onBack }) {
     score_left: '',
     score_right: '',
   });
-  const [userNames, setUserNames] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    loadUserNames();
-  }, []);
-
-  const loadUserNames = async () => {
-    try {
-      const names = await userService.getUserNames();
-      setUserNames(names);
-    } catch (error) {
-      console.error('사용자 목록 로드 실패:', error);
-    }
-  };
 
   const handlePlayerClick = (field) => {
     setSelectedPlayer(field);
@@ -48,8 +35,17 @@ function TennisRecordPage({ onBack }) {
   };
 
   const handleScoreChange = (field, value) => {
-    const numValue = parseInt(value) || '';
-    if (numValue === '' || (numValue >= 0 && numValue <= 7)) {
+    if (value === '') {
+      setScores((prev) => ({
+        ...prev,
+        [field]: '',
+      }));
+      setError('');
+      return;
+    }
+    
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue) && numValue >= 0 && numValue <= 7) {
       setScores((prev) => ({
         ...prev,
         [field]: numValue,
@@ -69,7 +65,20 @@ function TennisRecordPage({ onBack }) {
       return;
     }
 
-    if (scores.score_left === '' || scores.score_right === '') {
+    const seen = new Set();
+    for (const name of Object.values(players)) {
+      if (!name) continue;
+      if (seen.has(name)) {
+        setError('동일한 이름을 중복 선택할 수 없습니다');
+        return;
+      }
+      seen.add(name);
+    }
+
+    const leftScore = scores.score_left === '' ? 0 : Number(scores.score_left);
+    const rightScore = scores.score_right === '' ? 0 : Number(scores.score_right);
+
+    if (Number.isNaN(leftScore) || Number.isNaN(rightScore)) {
       setError('결과를 입력하세요');
       return;
     }
@@ -79,7 +88,8 @@ function TennisRecordPage({ onBack }) {
     try {
       await tennisService.saveRecord({
         ...players,
-        ...scores,
+        score_left: leftScore,
+        score_right: rightScore,
       });
       setSuccess(true);
       // 폼 초기화
@@ -114,7 +124,7 @@ function TennisRecordPage({ onBack }) {
       <main className="tennis-record-main">
         <form className="tennis-record-form" onSubmit={handleSubmit}>
           <div className="team-section">
-            <h2>왼쪽 팀</h2>
+            <h2>내 팀</h2>
             <div className="player-inputs">
               <button
                 type="button"
@@ -134,7 +144,7 @@ function TennisRecordPage({ onBack }) {
           </div>
 
           <div className="team-section">
-            <h2>오른쪽 팀</h2>
+            <h2>상대 팀</h2>
             <div className="player-inputs">
               <button
                 type="button"
@@ -157,7 +167,7 @@ function TennisRecordPage({ onBack }) {
             <h2>세트 결과</h2>
             <div className="score-inputs">
               <div className="score-input-group">
-                <label>왼쪽 팀</label>
+                <label>내 팀</label>
                 <input
                   type="number"
                   min="0"
@@ -169,7 +179,7 @@ function TennisRecordPage({ onBack }) {
               </div>
               <div className="score-separator">:</div>
               <div className="score-input-group">
-                <label>오른쪽 팀</label>
+                <label>상대 팀</label>
                 <input
                   type="number"
                   min="0"
@@ -203,40 +213,18 @@ function TennisRecordPage({ onBack }) {
           </button>
         </form>
 
-        {selectedPlayer && (
-          <div className="name-selector-overlay" onClick={() => setSelectedPlayer(null)}>
-            <div className="name-selector" onClick={(e) => e.stopPropagation()}>
-              <h3>이름 선택</h3>
-              <div className="name-list">
-                {userNames.length === 0 ? (
-                  <p className="no-names">등록된 이름이 없습니다</p>
-                ) : (
-                  userNames.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      className="name-item"
-                      onClick={() => handleNameSelect(name)}
-                    >
-                      {name}
-                    </button>
-                  ))
-                )}
-              </div>
-              <button
-                type="button"
-                className="close-selector"
-                onClick={() => setSelectedPlayer(null)}
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        )}
+        <NameSelector
+          isOpen={!!selectedPlayer}
+          onClose={() => setSelectedPlayer(null)}
+        onSelect={handleNameSelect}
+        title="이름 선택"
+        allowEmptySelection
+      />
       </main>
     </div>
   );
 }
 
 export default TennisRecordPage;
+
 

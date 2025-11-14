@@ -75,7 +75,7 @@ function RegisterModal({ isOpen, onClose, onRegister }) {
       if (err.message.includes('중복') || err.message.includes('이미')) {
         setError('이미 등록된 이름입니다');
       } else {
-        setError(err.message || '등록 중 오류가 발생했습니다');
+        setError(err.message || '선수등록 중 오류가 발생했습니다');
       }
       inputRef.current?.focus();
     } finally {
@@ -102,7 +102,7 @@ function RegisterModal({ isOpen, onClose, onRegister }) {
     <div className="register-modal-overlay" onClick={handleBackdropClick}>
       <div className="register-modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="register-modal-header">
-          <h2>사용자 등록</h2>
+          <h2>선수 등록</h2>
           <button 
             className="register-modal-close"
             onClick={handleCancel}
@@ -154,7 +154,7 @@ function RegisterModal({ isOpen, onClose, onRegister }) {
               className="register-modal-button submit-button"
               disabled={isLoading || !name.trim()}
             >
-              {isLoading ? '등록 중...' : '등록'}
+              {isLoading ? '선수등록 중...' : '선수등록'}
             </button>
           </div>
         </form>
