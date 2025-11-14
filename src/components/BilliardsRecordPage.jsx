@@ -261,7 +261,9 @@ function BilliardsRecordPage({ onBack }) {
                   >
                     <td>{index + 1}</td>
                     <td>{record.displayRank || '-'}</td>
-                    <td>{record.player_name || '이름 선택'}</td>
+                    <td className="player-name-cell">
+                      {record.player_name || '이름 선택'}
+                    </td>
                     <td>{record.base_dama || '-'}</td>
                     <td>{record.minus_dama || '-'}</td>
                     <td>{record.plus_dama || '-'}</td>

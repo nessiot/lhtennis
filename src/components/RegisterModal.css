@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1200;
+  z-index: 2200;
   padding: 1rem;
   backdrop-filter: blur(16px);
 }

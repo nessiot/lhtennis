@@ -100,6 +100,7 @@
 
 .records-table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
   font-size: 0.95rem;
 }
@@ -144,6 +145,14 @@
 .records-row td:nth-child(3) {
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.player-name-cell {
+  min-width: 5.5em;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .records-row .percentage {

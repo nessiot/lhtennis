@@ -24,6 +24,12 @@ function NameSelector({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsRegisterModalOpen(false);
+    }
+  }, [isOpen]);
+
   const loadUserNames = async () => {
     try {
       setIsLoading(true);
@@ -75,60 +81,60 @@ function NameSelector({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <>
-      <div className="name-selector-overlay" onClick={handleBackdropClick}>
-        <div className="name-selector" onClick={(e) => e.stopPropagation()}>
-          <div className="name-selector-header">
-            <h3>{title}</h3>
-          </div>
-          <div className="name-list">
-            {allowEmptySelection && (
+      {isOpen && (
+        <div className="name-selector-overlay" onClick={handleBackdropClick}>
+          <div className="name-selector" onClick={(e) => e.stopPropagation()}>
+            <div className="name-selector-header">
+              <h3>{title}</h3>
+            </div>
+            <div className="name-list">
+              {allowEmptySelection && (
+                <button
+                  type="button"
+                  className="name-item clear-selection"
+                  onClick={handleClearSelection}
+                >
+                  선택 안함
+                </button>
+              )}
+              {isLoading ? (
+                <p className="loading-names">로딩 중...</p>
+              ) : userNames.length === 0 ? (
+                <p className="no-names">등록된 이름이 없습니다</p>
+              ) : (
+                userNames.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    className="name-item"
+                    onClick={() => handleNameSelect(name)}
+                  >
+                    {name}
+                  </button>
+                ))
+              )}
+            </div>
+            <div className="name-selector-actions">
               <button
                 type="button"
-                className="name-item clear-selection"
-                onClick={handleClearSelection}
+                className="register-in-selector-button"
+                onClick={handleRegisterClick}
               >
-                선택 안함
+                선수등록
               </button>
-            )}
-            {isLoading ? (
-              <p className="loading-names">로딩 중...</p>
-            ) : userNames.length === 0 ? (
-              <p className="no-names">등록된 이름이 없습니다</p>
-            ) : (
-              userNames.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  className="name-item"
-                  onClick={() => handleNameSelect(name)}
-                >
-                  {name}
-                </button>
-              ))
-            )}
-          </div>
-          <div className="name-selector-actions">
-            <button
-              type="button"
-              className="register-in-selector-button"
-              onClick={handleRegisterClick}
-            >
-              선수등록
-            </button>
-            <button
-              type="button"
-              className="close-selector name-selector-close"
-              onClick={onClose}
-            >
-              닫기
-            </button>
+              <button
+                type="button"
+                className="close-selector name-selector-close"
+                onClick={onClose}
+              >
+                닫기
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <RegisterModal
         isOpen={isRegisterModalOpen}

@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import './RegisterModal.css';
 
 function RegisterModal({ isOpen, onClose, onRegister }) {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -96,9 +103,9 @@ function RegisterModal({ isOpen, onClose, onRegister }) {
     }
   };
 
-  if (!isOpen) return null;
+  if (!isMounted || !isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="register-modal-overlay" onClick={handleBackdropClick}>
       <div className="register-modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="register-modal-header">
@@ -159,9 +166,9 @@ function RegisterModal({ isOpen, onClose, onRegister }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
 export default RegisterModal;
-
