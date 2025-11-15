@@ -101,6 +101,43 @@ const oneYearAgoIso = () => {
   return oneYearAgo.toISOString()
 }
 
+const attachDailyRanks = (records = []) => {
+  const groups = new Map()
+  records.forEach((record) => {
+    const dateKey = record.created_at?.split('T')[0]
+    if (!dateKey) return
+    if (!groups.has(dateKey)) {
+      groups.set(dateKey, [])
+    }
+    groups.get(dateKey).push(record)
+  })
+
+  const rankById = new Map()
+  groups.forEach((list) => {
+    list
+      .slice()
+      .sort(
+        (a, b) =>
+          (parseFloat(b.percentage) || 0) - (parseFloat(a.percentage) || 0)
+      )
+      .forEach((record, idx) => {
+        const key =
+          record.id ??
+          `${record.player_name}-${record.created_at}-${idx}`
+        rankById.set(key, idx + 1)
+      })
+  })
+
+  return records.map((record, idx) => {
+    const key =
+      record.id ?? `${record.player_name}-${record.created_at}-${idx}`
+    return {
+      ...record,
+      rank: rankById.get(key) || null,
+    }
+  })
+}
+
 export const userService = {
   async getUsers() {
     if (shouldUseLocalFallback) {
@@ -340,15 +377,15 @@ export const billiardsService = {
 
   async getRecordsByName(name, limit = 365) {
     if (shouldUseLocalFallback) {
-      const records = readLocalArray(LOCAL_KEYS.billiards)
+      const allRecords = readLocalArray(LOCAL_KEYS.billiards)
       const oneYearAgo = new Date()
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-      return records
-        .filter(
-          (r) =>
-            r.player_name === name &&
-            new Date(r.created_at) >= oneYearAgo
-        )
+      const withinRange = allRecords.filter(
+        (r) => new Date(r.created_at) >= oneYearAgo
+      )
+      const ranked = attachDailyRanks(withinRange)
+      return ranked
+        .filter((r) => r.player_name === name)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, limit)
     }
@@ -356,13 +393,14 @@ export const billiardsService = {
     const { data, error } = await supabase
       .from('billiards_records')
       .select('*')
-      .eq('player_name', name)
       .gte('created_at', oneYearAgoIso())
       .order('created_at', { ascending: false })
-      .limit(limit)
 
     if (error) throw error
-    return data || []
+    const ranked = attachDailyRanks(data || [])
+    return ranked
+      .filter((record) => record.player_name === name)
+      .slice(0, limit)
   },
 
   async getAvailableDates() {
@@ -396,4 +434,3 @@ export const billiardsService = {
     return Array.from(dates).sort().reverse()
   },
 }
-

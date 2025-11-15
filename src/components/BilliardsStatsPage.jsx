@@ -54,8 +54,7 @@ function BilliardsStatsPage({ onBack }) {
   const loadRecordsByName = async () => {
     try {
       const nameRecords = await billiardsService.getRecordsByName(selectedName);
-      const ranked = nameRecords.map((record, index) => ({ ...record, rank: index + 1 }));
-      setRecords(ranked);
+      setRecords(nameRecords);
       setError('');
     } catch (error) {
       setError(error.message || '조회 중 오류가 발생했습니다');
