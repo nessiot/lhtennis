@@ -155,38 +155,47 @@ function BilliardsStatsPage({ onBack }) {
         {records.length > 0 && (
           <div className="stats-results">
             <h3>
-              {mode === 'date' 
+              {mode === 'date'
                 ? `${formatDate(selectedDate)} 경기 결과`
-                : `${selectedName} 최근 1년 기록`
-              }
+                : `${selectedName} 최근 1년 기록`}
             </h3>
-            <div className="records-table">
-              <div className={`table-header ${mode === 'name' ? 'with-date' : ''}`}>
-                <div>순위</div>
-                <div>이름</div>
-                <div>다마수</div>
-                <div>뺀공</div>
-                <div>히로</div>
-                <div>퍼센트</div>
-                {mode === 'name' && <div>날짜</div>}
-              </div>
-              {records.map((record) => (
-                <div key={record.id} className={`table-row ${mode === 'name' ? 'with-date' : ''}`}>
-                  <div className="cell-rank">{record.rank || '-'}</div>
-                  <div className="cell-name">{record.player_name}</div>
-                  <div className="cell-number">{record.base_dama}</div>
-                  <div className="cell-number">{record.minus_dama}</div>
-                  <div className="cell-number">{record.plus_dama}</div>
-                  <div className={`cell-percentage ${parseFloat(record.percentage) >= 100 ? 'positive' : 'negative'}`}>
-                    {Number(record.percentage || 0).toFixed(2)}%
-                  </div>
-                  {mode === 'name' && (
-                    <div className="cell-date">
-                      {new Date(record.created_at).toLocaleDateString('ko-KR')}
-                    </div>
-                  )}
-                </div>
-              ))}
+            <div className="records-table-wrapper">
+              <table className={`stats-table ${mode === 'name' ? 'with-date' : ''}`}>
+                <thead>
+                  <tr>
+                    <th>순위</th>
+                    <th>이름</th>
+                    <th>다마수</th>
+                    <th>뺀공</th>
+                    <th>히로</th>
+                    <th>퍼센트</th>
+                    {mode === 'name' && <th>날짜</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record) => (
+                    <tr key={record.id}>
+                      <td className="cell-rank">{record.rank || '-'}</td>
+                      <td className="cell-name">{record.player_name}</td>
+                      <td className="cell-number">{record.base_dama}</td>
+                      <td className="cell-number">{record.minus_dama}</td>
+                      <td className="cell-number">{record.plus_dama}</td>
+                      <td
+                        className={`cell-percentage ${
+                          parseFloat(record.percentage) >= 100 ? 'positive' : 'negative'
+                        }`}
+                      >
+                        {Number(record.percentage || 0).toFixed(2)}%
+                      </td>
+                      {mode === 'name' && (
+                        <td className="cell-date">
+                          {new Date(record.created_at).toLocaleDateString('ko-KR')}
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
